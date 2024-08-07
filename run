@@ -5,8 +5,8 @@ if [ ! -f drive.img ]; then
 	sudo pacman -S rsync qemu-full
 	wget -O TempleOS.ISO "https://templeos.org/Downloads/TempleOS.ISO"
 	qemu-img create drive.img 512M
-	qemu-system-x86_64 $QEMU_FLAGS -cdrom TempleOS.ISO -hda drive.img -boot d
-	return
+	qemu-system-x86_64 $QEMU_FLAGS -cdrom TempleOS.ISO -drive file=drive.img,format=raw -boot d
+	exit
 fi
 
 sync

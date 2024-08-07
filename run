@@ -1,0 +1,14 @@
+#!/bin/sh
+QEMU_FLAGS="-display gtk,zoom-to-fit=on -enable-kvm -m 2048"
+
+if [ ! -f drive.img ]; then
+	sudo pacman -S rsync qemu-full
+	wget -O TempleOS.ISO "https://templeos.org/Downloads/TempleOS.ISO"
+	qemu-img create drive.img 512M
+	qemu-system-x86_64 $QEMU_FLAGS -cdrom TempleOS.ISO -hda drive.img -boot d
+	return
+fi
+
+sync
+sudo umount mnt/ 2> /dev/null
+qemu-system-x86_64 $QEMU_FLAGS -drive file=drive.img,format=raw

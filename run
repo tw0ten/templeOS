@@ -19,7 +19,7 @@ if [ ! -f drive.img ]; then
 fi
 
 rm -rf mnt/*
-cp -r Root/* mnt
+sudo cp -r Root/* mnt
 sudo umount mnt/
 rm -rf Root
 qemu-system-x86_64 $QEMU_FLAGS -drive file=drive.img,format=raw

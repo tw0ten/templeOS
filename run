@@ -18,6 +18,10 @@ if [ ! -f drive.img ]; then
 	exit
 fi
 
+rm -rf mnt/*
+cp -r Root/* mnt
 sudo umount mnt/
+rm -rf Root
 qemu-system-x86_64 $QEMU_FLAGS -drive file=drive.img,format=raw
 sudo mount -o loop,offset=32256,rw,uid=$(id -u),gid=$(id -g) drive.img mnt/
+cp -r mnt Root

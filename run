@@ -2,13 +2,22 @@
 QEMU_FLAGS="-display gtk,zoom-to-fit=on -enable-kvm -m 2048"
 
 if [ ! -f drive.img ]; then
-	sudo pacman -S rsync qemu-full
-	wget -O TempleOS.ISO "https://templeos.org/Downloads/TempleOS.ISO"
-	qemu-img create drive.img 512M
-	qemu-system-x86_64 $QEMU_FLAGS -cdrom TempleOS.ISO -drive file=drive.img,format=raw -boot d
+	DIR=$(pwd)
+	ISO=$(mktemp)
+	mkdir mnt
+	wget -O $ISO "https://templeos.org/Downloads/TempleOS.ISO"
+	cd $(mktemp -d)
+	wget "https://templeos.org/Downloads/Linux/TOSZ"
+	wget "https://templeos.org/Downloads/Linux/TOSZ.CPP"
+	wget "https://templeos.org/Downloads/Linux/make_tosz"
+	source ./make_tosz
+	cp TOSZ $DIR
+	cd $DIR
+	qemu-img create drive.img 1G
+	qemu-system-x86_64 $QEMU_FLAGS -cdrom $ISO -drive file=drive.img,format=raw -boot d
 	exit
 fi
 
-sync
-sudo umount mnt/ 2> /dev/null
+sudo umount mnt/
 qemu-system-x86_64 $QEMU_FLAGS -drive file=drive.img,format=raw
+sudo mount -o loop,offset=32256,rw,uid=$(id -u),gid=$(id -g) drive.img mnt/

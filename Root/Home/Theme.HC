@@ -18,4 +18,6 @@ public CBGR48 gr_palette_custom[COLORS_NUM]={
 };
 
 MemCpy(gr_palette_std, gr_palette_custom, sizeof(gr_palette_custom));
+GrPaletteSet(gr_palette_std);
 Free(gr_palette_custom);
+

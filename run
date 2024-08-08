@@ -4,7 +4,7 @@ QEMU_FLAGS="-display gtk,zoom-to-fit=on -enable-kvm -m 2048"
 if [ ! -f drive.img ]; then
 	DIR=$(pwd)
 	ISO=$(mktemp)
-	mkdir mnt
+	mkdir Root
 	wget -O $ISO "https://templeos.org/Downloads/TempleOS.ISO"
 	cd $(mktemp -d)
 	wget "https://templeos.org/Downloads/Linux/TOSZ"
@@ -18,12 +18,6 @@ if [ ! -f drive.img ]; then
 	exit
 fi
 
-rm -rf mnt/*
-sudo cp -rf Root/* mnt
-sync mnt
-sudo umount mnt/
-rm -rf Root
+sudo umount Root/
 qemu-system-x86_64 $QEMU_FLAGS -drive file=drive.img,format=raw
-sudo mount -o loop,offset=32256,rw,uid=$(id -u),gid=$(id -g) drive.img mnt/
-cp -rf mnt Root
-sync Root
+sudo mount -o loop,offset=32256,rw,uid=$(id -u),gid=$(id -g) drive.img Root/
